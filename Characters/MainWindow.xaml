@@ -1,0 +1,893 @@
+﻿<Window x:Class="Characters.MainWindow"
+        
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:core="clr-namespace:System;assembly=mscorlib"
+        xmlns:local="clr-namespace:Characters"
+        mc:Ignorable="d"
+        Title="MainWindow" SizeToContent="WidthAndHeight" MaxHeight="1400" ResizeMode="NoResize" Background="#FFE0E0E0" >
+    <Grid x:Name="MainGrid" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,5,5,5">
+        <Grid.Resources>
+            <ObjectDataProvider x:Key="WeaponAttributeEnum" MethodName="GetValues" ObjectType="{x:Type core:Enum}">
+                <ObjectDataProvider.MethodParameters>
+                    <x:Type Type="local:WeaponAttributeEnum"/>
+                </ObjectDataProvider.MethodParameters>
+            </ObjectDataProvider>
+            <DataTemplate x:Name="textcollumn" x:Key="textcollumn" >
+                <local:Textbox_with_Tooltip TextWrapping="WrapWithOverflow" VerticalScrollBarVisibility="Visible" AcceptsReturn="True" MaxHeight="20" Text="{Binding Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                    
+                </local:Textbox_with_Tooltip>
+                
+            </DataTemplate>
+            <DataTemplate x:Name="RestTemplate" x:Key="RestTemplate" >
+                <DockPanel>
+                    <CheckBox x:Name="LongRest" Background="#00F0F0F0" IsChecked="{Binding RestLong, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    <CheckBox x:Name="ShortRest" Background="#00F0F0F0" IsChecked="{Binding RestShort, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                </DockPanel>
+            </DataTemplate>
+            <DataTemplate x:Key="cb_Template" >
+
+                <CheckBox Background="#00F0F0F0" IsChecked="{Binding Proficiency, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                
+            </DataTemplate>
+            <DataTemplate x:Key="UsedTemplate" >
+                <DockPanel FlowDirection="RightToLeft">
+                    <DockPanel LastChildFill="True">
+                        <local:Button_Plus x:Name="UsedTemplatePlus" Content="+" Padding="5,0,5,0" DockPanel.Dock="Right"/>
+                        <local:Button_Minus x:Name="UsedTemplateMinus" Content="-" Padding="5,0,5,0" DockPanel.Dock="Right"/>
+
+                    </DockPanel>
+                    <local:NumericTextbox Background="#00F0F0F0" x:Name="UsedTemplateTextbox" Text="{Binding Used, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                </DockPanel>
+            </DataTemplate>
+            <DataTemplate x:Key="ItemCountTemplate" >
+                <DockPanel FlowDirection="RightToLeft">
+                    <DockPanel LastChildFill="True">
+                        <local:Button_Plus Content="+" Padding="5,0,5,0" DockPanel.Dock="Right"/>
+                        <local:Button_Minus Content="-" Padding="5,0,5,0" DockPanel.Dock="Right"/>
+
+                    </DockPanel>
+                    <local:NumericTextbox Background="#00F0F0F0" x:Name="ItemCountTemplateTextbox" Text="{Binding Count, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                </DockPanel>
+            </DataTemplate>
+            <DataTemplate x:Key="CastSpell">
+                <local:CastButton/>
+            </DataTemplate>
+            <DataTemplate x:Key="ToggleButtonColumn" >
+                <DockPanel>
+                    <local:ToggleButtonDockpanel/>
+                    <local:NumericTextbox Background="#00F0F0F0" Text="{Binding SpellUseLevel, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                </DockPanel>
+                <!--<DockPanel x:Name="testname" LastChildFill="True">
+                    <RadioButton x:Name="ToggleButton1" Content="1" DockPanel.Dock="Left" Padding="5,0,5,0"/>
+                    <RadioButton x:Name="ToggleButton2" Content="2" DockPanel.Dock="Left" Padding="5,0,5,0"/>
+                    <RadioButton x:Name="ToggleButton3" Content="3" DockPanel.Dock="Left" Padding="5,0,5,0"/>
+                    <RadioButton x:Name="ToggleButton4" Content="4" DockPanel.Dock="Left" Padding="5,0,5,0"/>
+                    <RadioButton x:Name="ToggleButton5" Content="5" DockPanel.Dock="Left" Padding="5,0,5,0"/>
+                </DockPanel>-->
+            </DataTemplate>
+        </Grid.Resources>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="259*"/>
+            <ColumnDefinition Width="131*"/>
+            <ColumnDefinition Width="390*"/>
+        </Grid.ColumnDefinitions>
+        <ScrollViewer x:Name="MainScrollView" Height="1200" Grid.ColumnSpan="3">
+            <DockPanel LastChildFill="True">
+                <DockPanel LastChildFill="True">
+
+                    <DockPanel DockPanel.Dock="Top" LastChildFill="True">
+                        <DockPanel>
+                            <TextBox Name="tb_CharacterName"  TextWrapping="Wrap" DockPanel.Dock="Top" FontFamily="Calibri" FontSize="36" Background="Transparent"/>
+                            <Label Content="CHARACTER NAME" FontFamily="Calibri"/>
+                        </DockPanel>
+                        <DockPanel DockPanel.Dock="Left">
+                            <DockPanel DockPanel.Dock="Top">
+                                <DockPanel>
+                                    <TextBox x:Name="tb_Class" TextWrapping="Wrap" Text="" DockPanel.Dock="Top" FontFamily="Calibri" Background="Transparent"/>
+                                    <Label Content="KLASSE" FontFamily="Calibri"/>
+                                </DockPanel>
+                                <DockPanel DockPanel.Dock="Top">
+                                    <local:NumericTextbox x:Name="tb_Level" TextWrapping="Wrap" Text="" DockPanel.Dock="Top" FontFamily="Calibri" Background="Transparent"/>
+                                    <Label Content="STUFE" FontFamily="Calibri"/>
+                                </DockPanel>
+                            </DockPanel>
+                            <DockPanel DockPanel.Dock="Top">
+                                <TextBox x:Name="tb_Race" Height="{Binding ActualHeight, ElementName=tb_ExperiencePoints}" TextWrapping="Wrap" Text="" DockPanel.Dock="Top" FontFamily="Calibri" Background="Transparent"/>
+                                <Label Content="VOLK" FontFamily="Calibri"/>
+                            </DockPanel>
+                        </DockPanel>
+                        <DockPanel>
+                            <DockPanel DockPanel.Dock="Top">
+                                <TextBox x:Name="tb_Background" TextWrapping="Wrap" Text="" DockPanel.Dock="Top" FontFamily="Calibri" VerticalContentAlignment="Center" Background="Transparent"/>
+                                <Label Content="HINTERGRUND" FontFamily="Calibri"/>
+                            </DockPanel>
+                            <DockPanel>
+                                <TextBox x:Name="tb_Alignment" Height="{Binding ActualHeight, ElementName=tb_ExperiencePoints}" TextWrapping="Wrap" Text="" DockPanel.Dock="Top" FontFamily="Calibri" Background="Transparent"/>
+                                <Label Content="GESINNUNG" FontFamily="Calibri"/>
+                            </DockPanel>
+                        </DockPanel>
+                        <DockPanel>
+                            <DockPanel DockPanel.Dock="Top">
+                                <TextBox x:Name="tb_PlayerName" TextWrapping="Wrap" Text="" DockPanel.Dock="Top" FontFamily="Calibri" Background="Transparent"/>
+                                <Label Content="NAME DES SPIELERS" FontFamily="Calibri"/>
+                            </DockPanel>
+                            <DockPanel>
+                                <TextBox x:Name="tb_weigth" Height="{Binding ActualHeight, ElementName=tb_ExperiencePoints}" TextWrapping="Wrap" Text="" DockPanel.Dock="Top" FontFamily="Calibri" Background="Transparent"/>
+                                <Label Content="Gewicht" FontFamily="Calibri"/>
+                            </DockPanel>
+                            <DockPanel>
+                                <DockPanel DockPanel.Dock="Top">
+                                    <DockPanel DockPanel.Dock="Right">
+                                        <local:Button_Minus Content="-" DockPanel.Dock="Right" Padding="5,1,5,1"  IsTabStop="False"/>
+                                        <local:Button_Plus  Content="+" DockPanel.Dock="Right" Padding="5,1,5,1" IsTabStop="False"/>
+
+                                    </DockPanel>
+                                    <local:NumericTextbox x:Name="tb_ExperiencePoints" TextWrapping="Wrap" Text="" DockPanel.Dock="Top" FontFamily="Calibri" Background="Transparent"/>
+                                </DockPanel>
+                                <Label Content="ERFAHRUNG" FontFamily="Calibri"/>
+                            </DockPanel>
+                        </DockPanel>
+                    </DockPanel>
+                    <DockPanel LastChildFill="True">
+                        <DockPanel LastChildFill="True">
+                            <DockPanel LastChildFill="True" HorizontalAlignment="Left" VerticalAlignment="Top">
+                                <DockPanel DockPanel.Dock="Top">
+                                    <DockPanel LastChildFill="True" DockPanel.Dock="left">
+                                        <local:NumericTextbox x:Name="tb_ProficencyBonus"  BorderBrush="Black" BorderThickness="1" Height="43" TextWrapping="Wrap" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="36" FontWeight="Bold" FontFamily="Calibri" Background="{x:Null}" MinWidth="40"/>
+                                        <Label Content="ÜBUNGSBONUS" FontFamily="Calibri" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontWeight="Bold" />
+                                    </DockPanel>
+                                    <DockPanel LastChildFill="True" DockPanel.Dock="Top">
+                                        <TextBox x:Name="tb_Inspiration" BorderBrush="Black" BorderThickness="1" Height="43" TextWrapping="Wrap" Text="" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="36" FontWeight="Bold" FontFamily="Calibri" Background="{x:Null}" MinWidth="40"/>
+                                        <Label Content="INSPIRATION" FontFamily="Calibri" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontWeight="Bold" />
+                                    </DockPanel>
+                                </DockPanel>
+                                <DockPanel LastChildFill="True" DockPanel.Dock="Top">
+                                    <CheckBox x:Name="cb_JackOfAllTrades" Content="" Background="{x:Null}" VerticalContentAlignment="Center" IsTabStop="False"/>
+                                    <Label x:Name="l_JackofallTrades" Content="+20" Width="33" BorderBrush="Black" BorderThickness="1" FontFamily="Calibri"/>
+                                    <Label Content="Jack of all Trades" FontFamily="Calibri"/>
+                                </DockPanel>
+
+                                <DockPanel x:Name="dp_Attributes" DockPanel.Dock="Top">
+                                    <DockPanel x:Name="dp_Strength" LastChildFill="True" DockPanel.Dock="Top">
+                                        <DockPanel LastChildFill="True" DockPanel.Dock="Left" Width="155">
+                                            <local:NumericTextbox x:Name="tb_Strength" BorderBrush="Black" BorderThickness="1" Height="43" TextWrapping="Wrap" DockPanel.Dock="Top" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="36" FontWeight="Bold" FontFamily="Calibri" Background="{x:Null}"/>
+                                            <Label x:Name="l_Strength" BorderBrush="Black" BorderThickness="1" Content="+5" Height="87" DockPanel.Dock="Top" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="72" FontWeight="Bold" Padding="5,5,5,5" FontFamily="Arial"/>
+                                            <Label BorderBrush="Black" BorderThickness="1" Content="STÄRKE" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontFamily="Calibri" FontWeight="Bold"/>
+                                        </DockPanel>
+                                        <DockPanel LastChildFill="true" DockPanel.Dock="Left" Margin="5,0,0,0">
+
+                                            <DockPanel LastChildFill="True" DockPanel.Dock="Top">
+                                                <CheckBox x:Name="cb_StrengthSaveThrow"  Content="" Background="{x:Null}" VerticalContentAlignment="Center" IsChecked="False" IsTabStop="False"/>
+                                                <Label x:Name="l_StrengthSTBonus" Content="+20" Width="33" BorderBrush="Black" BorderThickness="1" FontFamily="Calibri"/>
+                                                <Label Content="Rettungswurf" FontFamily="Calibri"/>
+                                            </DockPanel>
+                                            <DockPanel LastChildFill="false">
+                                                <DockPanel LastChildFill="False" DockPanel.Dock="Top">
+                                                    <CheckBox x:Name="cb_AthleticsProficency"  Content="" Background="{x:Null}" VerticalContentAlignment="Center" IsTabStop="False"/>
+                                                    <CheckBox x:Name="cb_AthleticsExpertice"  Content="" Background="{x:Null}" VerticalContentAlignment="Center" IsChecked="False" IsTabStop="False"/>
+                                                    <Label x:Name="l_AthleticsBonus" Content="+20" Width="33" BorderBrush="Black" BorderThickness="1" FontFamily="Calibri"/>
+                                                    <Label Content="Athletik" FontFamily="Calibri"/>
+                                                </DockPanel>
+                                            </DockPanel>
+                                        </DockPanel>
+                                    </DockPanel>
+                                    <DockPanel x:Name="dp_Dexterity" LastChildFill="True" DockPanel.Dock="Top">
+                                        <DockPanel LastChildFill="True" DockPanel.Dock="Left" Width="155">
+                                            <local:NumericTextbox x:Name="tb_Dexterity" BorderBrush="Black" BorderThickness="1" Height="43" TextWrapping="Wrap" Text="" DockPanel.Dock="Top" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="36" FontWeight="Bold" FontFamily="Calibri" Background="{x:Null}"/>
+                                            <Label x:Name="l_Dexterity" BorderBrush="Black" BorderThickness="1" Content="+5" Height="87" DockPanel.Dock="Top" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="72" FontWeight="Bold" Padding="5,5,5,5" FontFamily="Arial"/>
+                                            <Label BorderBrush="Black" BorderThickness="1" Content="GESCHICKLICHKEIT" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontFamily="Calibri" FontWeight="Bold"/>
+                                        </DockPanel>
+                                        <DockPanel LastChildFill="true" DockPanel.Dock="Left" Margin="5,0,0,0">
+                                            <DockPanel LastChildFill="True" DockPanel.Dock="Top">
+                                                <CheckBox x:Name="cb_DexteritySaveThrow" Content="" Background="{x:Null}" VerticalContentAlignment="Center" IsChecked="False" IsTabStop="False"/>
+                                                <Label x:Name="l_DexteritySTBonus" Content="+20" Width="33" BorderBrush="Black" BorderThickness="1" FontFamily="Calibri"/>
+                                                <Label Content="Rettungswurf" FontFamily="Calibri"/>
+                                            </DockPanel>
+                                            <DockPanel x:Name="dp_DexAbilities" LastChildFill="false">
+                                                <DockPanel LastChildFill="False" DockPanel.Dock="Top">
+                                                    <CheckBox x:Name="cb_AcrobaticsProficency" Content="" Background="{x:Null}" VerticalContentAlignment="Center" IsTabStop="False"/>
+                                                    <CheckBox x:Name="cb_AcrobaticsExpertice"  Content="" Background="{x:Null}" VerticalContentAlignment="Center" IsChecked="False" IsTabStop="False"/>
+                                                    <Label x:Name="l_AcrobaticsBonus" Content="+20" Width="33" BorderBrush="Black" BorderThickness="1" FontFamily="Calibri"/>
+                                                    <Label Content="Akrobatik" FontFamily="Calibri"/>
+                                                </DockPanel>
+                                                <DockPanel LastChildFill="False" DockPanel.Dock="Top">
+                                                    <CheckBox x:Name="cb_SleightOfHandProficency" Content="" Background="{x:Null}" VerticalContentAlignment="Center" IsChecked="False" IsTabStop="False"/>
+                                                    <CheckBox x:Name="cb_SleightOfHandExpertice" Content="" Background="{x:Null}" VerticalContentAlignment="Center" IsTabStop="False"/>
+                                                    <Label x:Name="l_SleightOfHandBonus" Content="+20" Width="33" BorderBrush="Black" BorderThickness="1" FontFamily="Calibri"/>
+                                                    <Label Content="Fingerfertigkeit" FontFamily="Calibri"/>
+                                                </DockPanel>
+                                                <DockPanel LastChildFill="False" DockPanel.Dock="Top">
+                                                    <CheckBox x:Name="cb_StealthProficency" Content="" Background="{x:Null}" VerticalContentAlignment="Center" IsChecked="False" IsTabStop="False"/>
+                                                    <CheckBox x:Name="cb_StealthExpertice"  Content="" Background="{x:Null}" VerticalContentAlignment="Center" IsChecked="False" IsTabStop="False"/>
+                                                    <Label x:Name="l_StealthBonus" Content="+20" Width="33" BorderBrush="Black" BorderThickness="1" FontFamily="Calibri"/>
+                                                    <Label Content="Heimlichkeit" FontFamily="Calibri"/>
+                                                </DockPanel>
+                                            </DockPanel>
+                                        </DockPanel>
+                                    </DockPanel>
+                                    <DockPanel x:Name="dp_Constitution" LastChildFill="True" DockPanel.Dock="Top">
+                                        <DockPanel LastChildFill="True" DockPanel.Dock="Left" Width="155">
+                                            <local:NumericTextbox x:Name="tb_Constitution"  BorderBrush="Black" BorderThickness="1" Height="43" TextWrapping="Wrap" Text="" DockPanel.Dock="Top" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="36" FontWeight="Bold" FontFamily="Calibri" Background="{x:Null}"/>
+                                            <Label x:Name="l_Constitution" BorderBrush="Black" BorderThickness="1" Content="+5" Height="87" DockPanel.Dock="Top" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="72" FontWeight="Bold" Padding="5,5,5,5" FontFamily="Arial"/>
+                                            <Label BorderBrush="Black" BorderThickness="1" Content="KONSTITUTION" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontFamily="Calibri" FontWeight="Bold"/>
+                                        </DockPanel>
+                                        <DockPanel LastChildFill="True" DockPanel.Dock="Left" Margin="5,0,0,0">
+                                            <DockPanel LastChildFill="True" DockPanel.Dock="Top">
+                                                <CheckBox x:Name="cb_ConstitutionSaveThrow" Content="" Background="{x:Null}" VerticalContentAlignment="Center" IsChecked="False" IsTabStop="False"/>
+                                                <Label x:Name="l_ConstitutionSTBonus" Content="+20" Width="33" BorderBrush="Black" BorderThickness="1" FontFamily="Calibri"/>
+                                                <Label Content="Rettungswurf" FontFamily="Calibri"/>
+                                            </DockPanel>
+                                            <DockPanel/>
+                                        </DockPanel>
+                                    </DockPanel>
+                                    <DockPanel x:Name="dp_Intelligence" LastChildFill="True" DockPanel.Dock="Top">
+                                        <DockPanel LastChildFill="True" DockPanel.Dock="Left" Width="155">
+                                            <local:NumericTextbox x:Name="tb_Intelligence"  BorderBrush="Black" BorderThickness="1" Height="43" TextWrapping="Wrap" Text="" DockPanel.Dock="Top" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="36" FontWeight="Bold" FontFamily="Calibri" Background="{x:Null}"/>
+                                            <Label x:Name="l_Intelligence" BorderBrush="Black" BorderThickness="1" Content="+5" Height="87" DockPanel.Dock="Top" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="72" FontWeight="Bold" Padding="5,5,5,5" FontFamily="Arial"/>
+                                            <Label BorderBrush="Black" BorderThickness="1" Content="INTELLIGENZ" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontFamily="Calibri" FontWeight="Bold"/>
+                                        </DockPanel>
+                                        <DockPanel LastChildFill="True" DockPanel.Dock="Left" Margin="5,0,0,0">
+                                            <DockPanel LastChildFill="True" DockPanel.Dock="Top">
+                                                <CheckBox x:Name="cb_IntelligenceSaveThrow" Content="" Background="{x:Null}" VerticalContentAlignment="Center" IsChecked="False" IsTabStop="False"/>
+                                                <Label x:Name="l_IntelligenceSTBonus" Content="+20" Width="33" BorderBrush="Black" BorderThickness="1" FontFamily="Calibri"/>
+                                                <Label Content="Rettungswurf" FontFamily="Calibri"/>
+                                            </DockPanel>
+                                            <DockPanel LastChildFill="False">
+                                                <DockPanel LastChildFill="False" DockPanel.Dock="Top">
+                                                    <CheckBox x:Name="cb_ArcanaProficency"  Content="" Background="{x:Null}" VerticalContentAlignment="Center" IsChecked="False" IsTabStop="False"/>
+                                                    <CheckBox x:Name="cb_ArcanaExpertice"  Content="" Background="{x:Null}" VerticalContentAlignment="Center" IsChecked="False" IsTabStop="False"/>
+                                                    <Label x:Name="l_ArcanaBonus" Content="+20" Width="33" BorderBrush="Black" BorderThickness="1" FontFamily="Calibri"/>
+                                                    <Label Content="Arkane Kunde" FontFamily="Calibri"/>
+                                                </DockPanel>
+                                                <DockPanel LastChildFill="False" DockPanel.Dock="Top">
+                                                    <CheckBox x:Name="cb_HistoryProficency"  Content="" Background="{x:Null}" VerticalContentAlignment="Center" IsChecked="False" IsTabStop="False"/>
+                                                    <CheckBox x:Name="cb_HistoryExpertice"  Content="" Background="{x:Null}" VerticalContentAlignment="Center" IsChecked="False" IsTabStop="False"/>
+                                                    <Label x:Name="l_HistoryBonus" Content="+20" Width="33" BorderBrush="Black" BorderThickness="1" FontFamily="Calibri"/>
+                                                    <Label Content="Geschichte" FontFamily="Calibri"/>
+                                                </DockPanel>
+                                                <DockPanel LastChildFill="False" DockPanel.Dock="Top">
+                                                    <CheckBox x:Name="cb_InvestigationProficency"  Content="" Background="{x:Null}" VerticalContentAlignment="Center" IsChecked="False" IsTabStop="False"/>
+                                                    <CheckBox x:Name="cb_InvestigationExpertice"  Content="" Background="{x:Null}" VerticalContentAlignment="Center" IsChecked="False" IsTabStop="False"/>
+                                                    <Label x:Name="l_InvestigationBonus" Content="+20" Width="33" BorderBrush="Black" BorderThickness="1" FontFamily="Calibri"/>
+                                                    <Label Content="Nachforschungen" FontFamily="Calibri"/>
+                                                </DockPanel>
+                                                <DockPanel LastChildFill="False" DockPanel.Dock="Top">
+                                                    <CheckBox x:Name="cb_NatureProficency"  Content="" Background="{x:Null}" VerticalContentAlignment="Center" IsChecked="False" IsTabStop="False"/>
+                                                    <CheckBox x:Name="cb_NatureExpertice" Content="" Background="{x:Null}" VerticalContentAlignment="Center" IsChecked="False" IsTabStop="False"/>
+                                                    <Label x:Name="l_NatureBonus" Content="+20" Width="33" BorderBrush="Black" BorderThickness="1" FontFamily="Calibri"/>
+                                                    <Label Content="Naturkunde" FontFamily="Calibri"/>
+                                                </DockPanel>
+                                                <DockPanel LastChildFill="False" DockPanel.Dock="Top">
+                                                    <CheckBox x:Name="cb_ReligionProficency"  Content="" Background="{x:Null}" VerticalContentAlignment="Center" IsChecked="False" IsTabStop="False"/>
+                                                    <CheckBox x:Name="cb_ReligionExpertice"  Content="" Background="{x:Null}" VerticalContentAlignment="Center" IsChecked="False" IsTabStop="False"/>
+                                                    <Label x:Name="l_ReligionBonus" Content="+20" Width="33" BorderBrush="Black" BorderThickness="1" FontFamily="Calibri"/>
+                                                    <Label Content="Religion" FontFamily="Calibri"/>
+                                                </DockPanel>
+                                            </DockPanel>
+                                        </DockPanel>
+                                    </DockPanel>
+                                    <DockPanel x:Name="dp_Wisdom" LastChildFill="True" DockPanel.Dock="Top">
+                                        <DockPanel LastChildFill="True" DockPanel.Dock="Left" Width="155">
+                                            <local:NumericTextbox x:Name="tb_Wisdom"   BorderBrush="Black" BorderThickness="1" Height="43" TextWrapping="Wrap" Text="" DockPanel.Dock="Top" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="36" FontWeight="Bold" FontFamily="Calibri" Background="{x:Null}"/>
+                                            <Label x:Name="l_Wisdom" BorderBrush="Black" BorderThickness="1" Content="+5" Height="87" DockPanel.Dock="Top" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="72" FontWeight="Bold" Padding="5,5,5,5" FontFamily="Arial"/>
+                                            <Label BorderBrush="Black" BorderThickness="1" Content="WEISHEIT" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontFamily="Calibri" FontWeight="Bold"/>
+                                        </DockPanel>
+                                        <DockPanel LastChildFill="true" DockPanel.Dock="Left" Margin="5,0,0,0">
+                                            <DockPanel LastChildFill="True" DockPanel.Dock="Top">
+                                                <CheckBox x:Name="cb_WisdomSaveThrow" Content="" Background="{x:Null}" VerticalContentAlignment="Center" IsChecked="False" IsTabStop="False"/>
+                                                <Label x:Name="l_WisdomSTBonus" Content="+20" Width="33" BorderBrush="Black" BorderThickness="1" FontFamily="Calibri"/>
+                                                <Label Content="Rettungswurf" FontFamily="Calibri"/>
+                                            </DockPanel>
+                                            <DockPanel LastChildFill="false">
+                                                <DockPanel LastChildFill="False" DockPanel.Dock="Top">
+                                                    <CheckBox x:Name="cb_AnimalHandlingProficency"  Content="" Background="{x:Null}" VerticalContentAlignment="Center" IsChecked="False" IsTabStop="False"/>
+                                                    <CheckBox x:Name="cb_AnimalHandlingExpertice"  Content="" Background="{x:Null}" VerticalContentAlignment="Center" IsChecked="False" IsTabStop="False"/>
+                                                    <Label x:Name="l_AnimalHandlingBonus" Content="+20" Width="33" BorderBrush="Black" BorderThickness="1" FontFamily="Calibri"/>
+                                                    <Label Content="Heilkunde" FontFamily="Calibri"/>
+                                                </DockPanel>
+                                                <DockPanel LastChildFill="False" DockPanel.Dock="Top">
+                                                    <CheckBox x:Name="cb_InsightProficency" Content="" Background="{x:Null}" VerticalContentAlignment="Center" IsChecked="False" IsTabStop="False"/>
+                                                    <CheckBox x:Name="cb_InsightExpertice" Content=""  Background="{x:Null}" VerticalContentAlignment="Center" IsChecked="False" IsTabStop="False"/>
+                                                    <Label x:Name="l_InsightBonus" Content="+20" Width="33" BorderBrush="Black" BorderThickness="1" FontFamily="Calibri"/>
+                                                    <Label Content="Mit Tieren umgehen" FontFamily="Calibri"/>
+                                                </DockPanel>
+                                                <DockPanel LastChildFill="False" DockPanel.Dock="Top">
+                                                    <CheckBox x:Name="cb_MedicineProficency" Content=""  Background="{x:Null}" VerticalContentAlignment="Center" IsChecked="False" IsTabStop="False"/>
+                                                    <CheckBox x:Name="cb_MedicineExpertice" Content=""  Background="{x:Null}" VerticalContentAlignment="Center" IsChecked="False" IsTabStop="False"/>
+                                                    <Label x:Name="l_MedicineBonus" Content="+20" Width="33" BorderBrush="Black" BorderThickness="1" FontFamily="Calibri"/>
+                                                    <Label Content="Motiv erkennen" FontFamily="Calibri"/>
+                                                </DockPanel>
+                                                <DockPanel LastChildFill="False" DockPanel.Dock="Top">
+                                                    <CheckBox x:Name="cb_PerceptionProficency" Content=""  Background="{x:Null}" VerticalContentAlignment="Center" IsChecked="False" IsTabStop="False"/>
+                                                    <CheckBox x:Name="cb_PerceptionExpertice" Content=""  Background="{x:Null}" VerticalContentAlignment="Center" IsChecked="False" IsTabStop="False"/>
+                                                    <Label x:Name="l_PerceptionBonus" Content="+20" Width="33" BorderBrush="Black" BorderThickness="1" FontFamily="Calibri"/>
+                                                    <Label Content="Überlebenskunst" FontFamily="Calibri"/>
+                                                </DockPanel>
+                                                <DockPanel LastChildFill="False" DockPanel.Dock="Top">
+                                                    <CheckBox x:Name="cb_SurvivalProficency" Content=""  Background="{x:Null}" VerticalContentAlignment="Center" IsChecked="False" IsTabStop="False"/>
+                                                    <CheckBox x:Name="cb_SurvivalExpertice" Content=""  Background="{x:Null}" VerticalContentAlignment="Center" IsChecked="False" IsTabStop="False"/>
+                                                    <Label x:Name="l_SurvivalBonus" Content="+20" Width="33" BorderBrush="Black" BorderThickness="1" FontFamily="Calibri"/>
+                                                    <Label Content="Wahrnehmung" FontFamily="Calibri"/>
+                                                </DockPanel>
+                                            </DockPanel>
+                                        </DockPanel>
+                                    </DockPanel>
+                                    <DockPanel x:Name="dp_Charisma" LastChildFill="True" DockPanel.Dock="Top">
+                                        <DockPanel LastChildFill="True" DockPanel.Dock="Left" Width="155">
+                                            <local:NumericTextbox x:Name="tb_Charisma"  BorderBrush="Black" BorderThickness="1" Height="43" TextWrapping="Wrap" Text="" DockPanel.Dock="Top" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="36" FontWeight="Bold" FontFamily="Calibri" Background="{x:Null}"/>
+                                            <Label x:Name="l_Charisma" BorderBrush="Black" BorderThickness="1" Content="+5" Height="87" DockPanel.Dock="Top" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="72" FontWeight="Bold" Padding="5,5,5,5" FontFamily="Arial"/>
+                                            <Label BorderBrush="Black" BorderThickness="1" Content="CHARISMA" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontFamily="Calibri" FontWeight="Bold"/>
+                                        </DockPanel>
+                                        <DockPanel LastChildFill="true" DockPanel.Dock="Left" Margin="5,0,0,0">
+                                            <DockPanel LastChildFill="True" DockPanel.Dock="Top">
+                                                <CheckBox x:Name="cb_CharismaSaveThrow"  Content="" Background="{x:Null}" VerticalContentAlignment="Center" IsChecked="False" IsTabStop="False"/>
+                                                <Label x:Name="l_CharismaSTBonus" Content="+20" Width="33" BorderBrush="Black" BorderThickness="1" FontFamily="Calibri"/>
+                                                <Label Content="Rettungswurf" FontFamily="Calibri"/>
+                                            </DockPanel>
+                                            <DockPanel LastChildFill="false">
+                                                <DockPanel LastChildFill="False" DockPanel.Dock="Top">
+                                                    <CheckBox x:Name="cb_DeceptionProficency"  Content="" Background="{x:Null}" VerticalContentAlignment="Center" IsChecked="False" IsTabStop="False"/>
+                                                    <CheckBox x:Name="cb_DeceptionExpertice"  Content="" Background="{x:Null}" VerticalContentAlignment="Center" IsChecked="False" IsTabStop="False"/>
+                                                    <Label x:Name="l_DeceptionBonus" Content="+20" Width="33" BorderBrush="Black" BorderThickness="1" FontFamily="Calibri"/>
+                                                    <Label Content="Auftreten" FontFamily="Calibri"/>
+                                                </DockPanel>
+                                                <DockPanel LastChildFill="False" DockPanel.Dock="Top">
+                                                    <CheckBox x:Name="cb_IntimidationProficency"  Content="" Background="{x:Null}" VerticalContentAlignment="Center" IsChecked="False" IsTabStop="False"/>
+                                                    <CheckBox x:Name="cb_IntimidationExpertice"  Content="" Background="{x:Null}" VerticalContentAlignment="Center" IsChecked="False" IsTabStop="False"/>
+                                                    <Label x:Name="l_IntimidationBonus" Content="+20" Width="33" BorderBrush="Black" BorderThickness="1" FontFamily="Calibri"/>
+                                                    <Label Content="Einschüchtern" FontFamily="Calibri"/>
+                                                </DockPanel>
+                                                <DockPanel LastChildFill="False" DockPanel.Dock="Top">
+                                                    <CheckBox x:Name="cb_PerformanceProficency"  Content="" Background="{x:Null}" VerticalContentAlignment="Center" IsChecked="False" IsTabStop="False"/>
+                                                    <CheckBox x:Name="cb_PerformanceExpertice"  Content="" Background="{x:Null}" VerticalContentAlignment="Center" IsChecked="False" IsTabStop="False"/>
+                                                    <Label x:Name="l_PerformanceBonus" Content="+20" Width="33" BorderBrush="Black" BorderThickness="1" FontFamily="Calibri"/>
+                                                    <Label Content="Täuschen" FontFamily="Calibri"/>
+                                                </DockPanel>
+                                                <DockPanel LastChildFill="False" DockPanel.Dock="Top">
+                                                    <CheckBox x:Name="cb_PersuationProficency"  Content="" Background="{x:Null}" VerticalContentAlignment="Center" IsChecked="False" IsTabStop="False"/>
+                                                    <CheckBox x:Name="cb_PersuationExpertice"  Content="" Background="{x:Null}" VerticalContentAlignment="Center" IsChecked="False" IsTabStop="False"/>
+                                                    <Label x:Name="l_PersuationBonus" Content="+20" Width="33" BorderBrush="Black" BorderThickness="1" FontFamily="Calibri"/>
+                                                    <Label Content="Überzeugen" FontFamily="Calibri"/>
+                                                </DockPanel>
+                                            </DockPanel>
+                                        </DockPanel>
+                                    </DockPanel>
+                                </DockPanel>
+                                <DockPanel LastChildFill="True" DockPanel.Dock="Bottom">
+                                    <Label x:Name="l_PassiveWisdomNumber" FontFamily="Calibri" FontSize="36" FontWeight="Bold"/>
+                                    <Label Content="PASSIVE WAHRNEHMUNG" FontFamily="Calibri" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" />
+                                </DockPanel>
+                            </DockPanel>
+                            <DockPanel DockPanel.Dock="Top">
+                                <DockPanel DockPanel.Dock="Top" LastChildFill="True">
+
+                                    <DockPanel x:Name="dp_Money" DockPanel.Dock="Right" VerticalAlignment="Center">
+                                        <DockPanel DockPanel.Dock="Top">
+                                            <DockPanel DockPanel.Dock="Right">
+                                                <local:Button_Up Tag="P" Content="^" DockPanel.Dock="Top" Visibility="Hidden"/>
+                                                <local:Button_Down Tag="P" Content="^" RenderTransformOrigin="0.5,0.5" >
+                                                    <Button.RenderTransform>
+                                                        <TransformGroup>
+                                                            <ScaleTransform/>
+                                                            <SkewTransform/>
+                                                            <RotateTransform Angle="180"/>
+                                                            <TranslateTransform/>
+                                                        </TransformGroup>
+                                                    </Button.RenderTransform>
+                                                </local:Button_Down>
+                                            </DockPanel>
+                                            <Label DockPanel.Dock="Right" Content="P"  Width="{Binding ActualWidth, ElementName=l_Gold}"/>
+                                            <DockPanel>
+                                                <DockPanel DockPanel.Dock="Right" FlowDirection="LeftToRight">
+                                                    <local:Button_Plus Content="+" Padding="5,0,5,0" DockPanel.Dock="Top"/>
+                                                    <local:Button_Minus Content="-" Padding="5,0,5,0" />
+
+                                                </DockPanel>
+                                                <local:NumericTextbox x:Name="tb_Platin" DockPanel.Dock="Left" MinWidth="20" Background="Transparent"/>
+                                            </DockPanel>
+                                        </DockPanel>
+                                        <DockPanel DockPanel.Dock="Top">
+                                            <DockPanel DockPanel.Dock="Right">
+                                                <local:Button_Up Tag="G" Content="^" DockPanel.Dock="Top"/>
+                                                <local:Button_Down Tag="G" Content="^" RenderTransformOrigin="0.5,0.5" >
+                                                    <Button.RenderTransform>
+                                                        <TransformGroup>
+                                                            <ScaleTransform/>
+                                                            <SkewTransform/>
+                                                            <RotateTransform Angle="180"/>
+                                                            <TranslateTransform/>
+                                                        </TransformGroup>
+                                                    </Button.RenderTransform>
+                                                </local:Button_Down>
+                                            </DockPanel>
+                                            <Label x:Name="l_Gold" DockPanel.Dock="Right" Content="G"/>
+                                            <DockPanel>
+                                                <DockPanel DockPanel.Dock="Right" FlowDirection="LeftToRight">
+                                                    <local:Button_Plus Content="+" Padding="5,0,5,0" DockPanel.Dock="Top"/>
+                                                    <local:Button_Minus Content="-" Padding="5,0,5,0"/>
+
+                                                </DockPanel>
+                                                <local:NumericTextbox x:Name="tb_Gold" DockPanel.Dock="Left" Background="Transparent"/>
+                                            </DockPanel>
+                                        </DockPanel>
+                                        <DockPanel DockPanel.Dock="Top">
+                                            <DockPanel DockPanel.Dock="Right">
+                                                <local:Button_Up Tag="E" Content="^" DockPanel.Dock="Top"/>
+                                                <local:Button_Down Tag="E" Content="^" RenderTransformOrigin="0.5,0.5" >
+                                                    <Button.RenderTransform>
+                                                        <TransformGroup>
+                                                            <ScaleTransform/>
+                                                            <SkewTransform/>
+                                                            <RotateTransform Angle="180"/>
+                                                            <TranslateTransform/>
+                                                        </TransformGroup>
+                                                    </Button.RenderTransform>
+                                                </local:Button_Down>
+                                            </DockPanel>
+                                            <Label DockPanel.Dock="Right" Content="E"  Width="{Binding ActualWidth, ElementName=l_Gold}"/>
+                                            <DockPanel>
+                                                <DockPanel DockPanel.Dock="Right" FlowDirection="LeftToRight">
+                                                    <local:Button_Plus Content="+" Padding="5,0,5,0" DockPanel.Dock="Top"/>
+                                                    <local:Button_Minus Content="-" Padding="5,0,5,0"/>
+
+                                                </DockPanel>
+                                                <local:NumericTextbox x:Name="tb_Electrum" DockPanel.Dock="Left" Background="Transparent"/>
+                                            </DockPanel>
+                                        </DockPanel>
+                                        <DockPanel DockPanel.Dock="Top">
+                                            <DockPanel DockPanel.Dock="Right">
+                                                <local:Button_Up Tag="S" Content="^" DockPanel.Dock="Top"/>
+                                                <local:Button_Down Tag="S" Content="^" RenderTransformOrigin="0.5,0.5" >
+                                                    <Button.RenderTransform>
+                                                        <TransformGroup>
+                                                            <ScaleTransform/>
+                                                            <SkewTransform/>
+                                                            <RotateTransform Angle="180"/>
+                                                            <TranslateTransform/>
+                                                        </TransformGroup>
+                                                    </Button.RenderTransform>
+                                                </local:Button_Down>
+                                            </DockPanel>
+                                            <Label DockPanel.Dock="Right" Content="S" Width="{Binding ActualWidth, ElementName=l_Gold}"/>
+                                            <DockPanel>
+                                                <DockPanel DockPanel.Dock="Right" FlowDirection="LeftToRight">
+                                                    <local:Button_Plus Content="+" Padding="5,0,5,0" DockPanel.Dock="Top"/>
+                                                    <local:Button_Minus Content="-" Padding="5,0,5,0" />
+
+                                                </DockPanel>
+                                                <local:NumericTextbox x:Name="tb_Silver" DockPanel.Dock="Left" Background="Transparent"/>
+                                            </DockPanel>
+                                        </DockPanel>
+                                        <DockPanel DockPanel.Dock="Top">
+                                            <DockPanel DockPanel.Dock="Right">
+                                                <local:Button_Up Tag="C" Content="^" DockPanel.Dock="Top"/>
+                                                <local:Button_Down Tag="C" Content="^" RenderTransformOrigin="0.5,0.5" Visibility="Hidden" >
+                                                    <Button.RenderTransform>
+                                                        <TransformGroup>
+                                                            <ScaleTransform/>
+                                                            <SkewTransform/>
+                                                            <RotateTransform Angle="180"/>
+                                                            <TranslateTransform/>
+                                                        </TransformGroup>
+                                                    </Button.RenderTransform>
+                                                </local:Button_Down>
+                                            </DockPanel>
+                                            <Label DockPanel.Dock="Right" Content="K"  Width="{Binding ActualWidth, ElementName=l_Gold}"/>
+                                            <DockPanel>
+                                                <DockPanel DockPanel.Dock="Right" FlowDirection="LeftToRight">
+                                                    <local:Button_Plus Content="+" Padding="5,0,5,0"  DockPanel.Dock="Top"/>
+                                                    <local:Button_Minus Content="-" Padding="5,0,5,0"/>
+
+                                                </DockPanel>
+                                                <local:NumericTextbox x:Name="tb_Copper" DockPanel.Dock="Left" Background="Transparent"/>
+                                            </DockPanel>
+                                        </DockPanel>
+                                    </DockPanel>
+                                    <DockPanel DockPanel.Dock="Left">
+                                        <DockPanel DockPanel.Dock="Top" HorizontalAlignment="Center">
+                                            <DockPanel>
+                                                <local:NumericTextbox x:Name="tb_ArmorClass" FontSize="36" TextWrapping="Wrap" Text="20" FontFamily="Calibri" DockPanel.Dock="Top" HorizontalContentAlignment="Center" Background="Transparent"/>
+                                                <Label Content="RÜSTUNG" FontFamily="Calibri" DockPanel.Dock="Top" HorizontalAlignment="Center" Padding="5,5,5,0"/>
+                                                <Label Content="(RK)" FontFamily="Calibri" DockPanel.Dock="Top" HorizontalAlignment="Center" Padding="5,0,5,5"/>
+                                            </DockPanel>
+                                            <DockPanel>
+                                                <local:NumericTextbox x:Name="tb_ArmorBonus" FontSize="36" TextWrapping="Wrap" Text="20" FontFamily="Calibri" DockPanel.Dock="Top" HorizontalContentAlignment="Center" Background="Transparent"/>
+                                                <Label Content="TEMP.&#xA;BONUS" FontFamily="Calibri"/>
+                                            </DockPanel>
+                                            <DockPanel>
+                                                <local:NumericTextbox x:Name="tb_Initiative" FontSize="36" TextWrapping="Wrap" Text="20"  FontFamily="Calibri" DockPanel.Dock="Top" HorizontalContentAlignment="Center" Background="Transparent"/>
+                                                <Label Content="INITIATIVE" FontFamily="Calibri"/>
+                                            </DockPanel>
+                                        </DockPanel>
+                                        <DockPanel DockPanel.Dock="Top" HorizontalAlignment="Center">
+                                            <DockPanel HorizontalAlignment="Stretch" VerticalAlignment="Center">
+                                                <local:NumericTextbox x:Name="tb_HealthPointsMax"  FontSize="36" TextWrapping="Wrap" Text="20" FontFamily="Calibri" DockPanel.Dock="Top" HorizontalContentAlignment="Center" Background="Transparent"/>
+                                                <Label Content="MAX TP" FontFamily="Calibri"/>
+                                            </DockPanel>
+                                            <DockPanel>
+                                                <DockPanel DockPanel.Dock="Top">
+                                                    <DockPanel DockPanel.Dock="Top">
+                                                        <DockPanel DockPanel.Dock="Right">
+                                                            <local:Button_Minus Content="-" DockPanel.Dock="Right" Padding="5,1,5,1"  IsTabStop="False"/>
+                                                            <local:Button_Plus Content="+" DockPanel.Dock="Right" Padding="5,1,5,1"  IsTabStop="False"/>
+
+                                                        </DockPanel>
+                                                        <local:NumericTextbox x:Name="tb_HealthPointsCurrent" FontSize="20" TextWrapping="Wrap" Text="20" FontFamily="Calibri" DockPanel.Dock="left" HorizontalContentAlignment="Center" Background="Transparent"/>
+
+                                                    </DockPanel>
+                                                    <Label Content="AKTUELLE TREFFERPUNKTE" FontFamily="Calibri" DockPanel.Dock="Bottom"/>
+                                                </DockPanel>
+                                                <DockPanel>
+                                                    <DockPanel DockPanel.Dock="Top">
+                                                        <DockPanel DockPanel.Dock="Right">
+                                                            <local:Button_Minus Content="-" DockPanel.Dock="Right" Padding="5,1,5,1"  IsTabStop="False"/>
+                                                            <local:Button_Plus Content="+" DockPanel.Dock="Right" Padding="5,1,5,1"  IsTabStop="False"/>
+
+                                                        </DockPanel>
+                                                        <local:NumericTextbox x:Name="tb_HealthPointsTemp"  FontSize="20" TextWrapping="Wrap" Text="20" FontFamily="Calibri" DockPanel.Dock="Top" HorizontalContentAlignment="Center" Background="Transparent"/>
+
+                                                    </DockPanel>
+                                                    <Label Content="TEMPORÄRE TREFFERPUNKTE" FontFamily="Calibri"/>
+                                                </DockPanel>
+                                            </DockPanel>
+                                        </DockPanel>
+                                        <DockPanel DockPanel.Dock="Top" HorizontalAlignment="Center">
+                                            <DockPanel DockPanel.Dock="Top">
+
+                                                <DockPanel DockPanel.Dock="Left">
+                                                    <local:NumericTextbox x:Name="tb_Exaustion" TextWrapping="Wrap" Text="20" FontFamily="Calibri" DockPanel.Dock="Top" HorizontalContentAlignment="Center" FontSize="36" Background="Transparent"/>
+                                                    <Label Content="ERSCHÖPFUNG" FontFamily="Calibri"/>
+                                                </DockPanel>
+                                                <DockPanel>
+                                                    <CheckBox x:Name="cb_Darksight" Content="DUNKELSICHT" DockPanel.Dock="Top"/>
+                                                    <local:NumericTextbox x:Name="tb_Darksight" TextWrapping="Wrap" Text="20" FontFamily="Calibri" DockPanel.Dock="Top" HorizontalContentAlignment="Center" FontSize="36" Background="Transparent"/>
+                                                    <Label Content="SICHT" FontFamily="Calibri" DockPanel.Dock="Top"/>
+
+
+                                                </DockPanel>
+                                                <DockPanel >
+                                                    <TextBox x:Name="tb_Speed" TextWrapping="Wrap" Text="20" FontFamily="Calibri" DockPanel.Dock="Top" HorizontalContentAlignment="Center" FontSize="36" Background="Transparent"/>
+                                                    <Label Content="BEWEGUNG" FontFamily="Calibri"/>
+
+                                                </DockPanel>
+                                            </DockPanel>
+                                            <DockPanel VerticalAlignment="Center">
+                                                <DockPanel DockPanel.Dock="Top" HorizontalAlignment="Center">
+                                                    <DockPanel DockPanel.Dock="left">
+                                                        <Label Content="Würfel" FontFamily="Calibri" DockPanel.Dock="Top"/>
+                                                        <TextBox x:Name="tb_Dice" Height="{Binding ActualHeight, ElementName=tb_UsedDice}" TextWrapping="Wrap" Text="5" FontFamily="Calibri" DockPanel.Dock="Top" FontSize="36" Background="Transparent"/>
+                                                        <TextBox x:Name="tb_Dice1" TextWrapping="Wrap" Text="" FontFamily="Calibri" FontSize="36" Background="Transparent"/>
+                                                    </DockPanel>
+                                                    <DockPanel DockPanel.Dock="left">
+                                                        <Label Content="Total" FontFamily="Calibri" DockPanel.Dock="Top"/>
+                                                        <local:NumericTextbox x:Name="tb_TotalDice" Height="{Binding ActualHeight, ElementName=tb_UsedDice}" TextWrapping="Wrap" Text="5" FontFamily="Calibri" DockPanel.Dock="Top" FontSize="36" Background="Transparent"/>
+                                                        <local:NumericTextbox x:Name="tb_TotalDice1" TextWrapping="Wrap" Text="" FontFamily="Calibri" FontSize="36" Background="Transparent"/>
+                                                    </DockPanel>
+                                                    <DockPanel DockPanel.Dock="left"/>
+                                                    <Label Content="Verwendet" FontFamily="Calibri" DockPanel.Dock="Top"/>
+                                                    <DockPanel>
+                                                        <DockPanel DockPanel.Dock="Top">
+                                                            <DockPanel DockPanel.Dock="Right">
+                                                                <local:Button_Plus Content="+" DockPanel.Dock="top" Padding="5,1,5,1"  IsTabStop="False"/>
+                                                                <local:Button_Minus Content="-" DockPanel.Dock="Right" Padding="5,1,5,1"  IsTabStop="False" />
+
+
+                                                            </DockPanel>
+                                                            <local:NumericTextbox x:Name="tb_UsedDice" TextWrapping="Wrap" Text="5" FontFamily="Calibri" DockPanel.Dock="Top" FontSize="36" Background="Transparent"/>
+
+                                                        </DockPanel>
+                                                        <DockPanel DockPanel.Dock="Right">
+                                                            <local:Button_Plus Content="+" DockPanel.Dock="Top" Padding="5,1,5,1"  IsTabStop="False"/>
+                                                            <local:Button_Minus Content="-" DockPanel.Dock="Right" Padding="5,1,5,1"  IsTabStop="False"/>
+
+
+                                                        </DockPanel>
+                                                        <local:NumericTextbox x:Name="tb_UsedDice1" TextWrapping="Wrap" Text="" FontFamily="Calibri" FontSize="36" Background="Transparent"/>
+
+                                                    </DockPanel>
+                                                </DockPanel>
+                                                <Label Content="Trefferwürfel" FontFamily="Calibri" DockPanel.Dock="Top" HorizontalAlignment="Center"/>
+                                            </DockPanel>
+                                            <DockPanel VerticalAlignment="Center">
+                                                <DockPanel DockPanel.Dock="top" HorizontalAlignment="Right" VerticalAlignment="Center">
+                                                    <DockPanel DockPanel.Dock="Top" HorizontalAlignment="Right">
+                                                        <Label Content="ERFOLGE" FontFamily="Calibri"/>
+                                                        <CheckBox x:Name="cb_DeathSavesSuccesses1" Content="" Background="{x:Null}" VerticalContentAlignment="Center" IsChecked="False" IsTabStop="False"/>
+                                                        <CheckBox x:Name="cb_DeathSavesSuccesses2" Content="" Background="{x:Null}" VerticalContentAlignment="Center" IsChecked="False" IsTabStop="False"/>
+                                                        <CheckBox x:Name="cb_DeathSavesSuccesses3" Content="" Background="{x:Null}" VerticalContentAlignment="Center" IsChecked="False" IsTabStop="False"/>
+                                                    </DockPanel>
+                                                    <DockPanel HorizontalAlignment="Right">
+                                                        <Label Content="FEHLSCHLÄGE" FontFamily="Calibri" VerticalContentAlignment="Center" HorizontalContentAlignment="Right"/>
+                                                        <CheckBox x:Name="cb_DeathSavesFailures1" Content="" Background="{x:Null}" VerticalContentAlignment="Center" IsChecked="False" IsTabStop="False"/>
+                                                        <CheckBox x:Name="cb_DeathSavesFailures2" Content="" Background="{x:Null}" VerticalContentAlignment="Center" IsChecked="False" IsTabStop="False"/>
+                                                        <CheckBox x:Name="cb_DeathSavesFailures3" Content="" Background="{x:Null}" VerticalContentAlignment="Center" DockPanel.Dock="Left" HorizontalContentAlignment="Left" IsChecked="False" IsTabStop="False"/>
+                                                    </DockPanel>
+                                                </DockPanel>
+
+                                                <Label Content="DEATH SAVES" VerticalContentAlignment="Top" HorizontalContentAlignment="Center"/>
+                                            </DockPanel>
+                                        </DockPanel>
+                                    </DockPanel>
+                                </DockPanel>
+
+                                <DockPanel DockPanel.Dock="Top">
+
+                                    <DockPanel>
+                                        <DataGrid HorizontalAlignment="Center" RowBackground="#00F0F0F0" AlternatingRowBackground="#33688CAF" Name="WeaponGrid" DockPanel.Dock="Top" AutoGenerateColumns="False" CanUserAddRows="True" CanUserResizeRows="False" CanUserDeleteRows="True" CanUserReorderColumns="True" AllowDrop="True" Background="#00F0F0F0" BorderBrush="#FF688CAF">
+                                            <!--<DataGrid.ContextMenu>
+                                                <ContextMenu>
+                                                    <MenuItem Header="_New" />
+                                                </ContextMenu>
+                                            </DataGrid.ContextMenu>-->
+                                            <DataGrid.ColumnHeaderStyle>
+                                                <Style TargetType="DataGridColumnHeader">
+
+                                                    <Setter Property="Background" Value="#00000000"/>
+                                                    <Setter Property="Foreground" Value="Black"/>
+
+                                                    <!--<Style.Triggers>
+                                                                <Trigger Property="IsMouseOver" Value="True">
+                                                                    <Setter Property="ToolTip" Value="Click to sort."/>
+                                                                </Trigger>
+                                                            </Style.Triggers>-->
+                                                </Style>
+                                            </DataGrid.ColumnHeaderStyle>
+
+                                            <DataGrid.Columns>
+                                                <DataGridTextColumn x:Name="WeaponName" Header="WAFFE"/>
+                                                <local:DataGridNumericColumn x:Name="WeaponBonus" Header="BONUS"/>
+                                                <DataGridComboBoxColumn x:Name="WeaponAttribute" Header="ATTRIBUTE" ItemsSource="{Binding Source={StaticResource WeaponAttributeEnum}}"/>
+                                                <DataGridTextColumn x:Name="WeaponReach" Header="REICHWEITE"/>
+                                                <DataGridTemplateColumn x:Name="WeaponProficiency" Header="ÜBUNG" CellTemplate="{StaticResource cb_Template}" Width="auto"/>
+                                                <DataGridTextColumn x:Name="WeaponDice" Header="WÜRFEL" />
+                                                <DataGridTextColumn x:Name="WeaponAttack" Header="ANGRIFF" IsReadOnly="True"/>
+                                                <DataGridTextColumn x:Name="WeaponDamage" Header="SCHADEN" IsReadOnly="True"/>
+                                            </DataGrid.Columns>
+                                            <!--<DataGrid.RowHeaderTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Text="hihiheader" ba/>
+                                                </DataTemplate>
+                                            </DataGrid.RowHeaderTemplate>-->
+                                        </DataGrid>
+                                    </DockPanel>
+
+                                </DockPanel>
+
+                                <DockPanel DockPanel.Dock="Top" LastChildFill="true" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+
+
+
+                                    <!--<Button Content="Button" Width="Auto" Click="Button_Click_1"/>-->
+                                </DockPanel>
+                                <DockPanel>
+                                    <DockPanel x:Name="dp_LimitedAbilities" LastChildFill="True" DockPanel.Dock="Top">
+                                        <Button DockPanel.Dock="Top"  Background="{x:Null}" BorderBrush="{x:Null}"  VerticalContentAlignment="Stretch" VerticalAlignment="Stretch" HorizontalContentAlignment="Stretch" FontStretch="Normal">
+                                            <DockPanel VerticalAlignment="Stretch" IsHitTestVisible="True" LastChildFill="True" Background="#00000000">
+                                                <DockPanel VerticalAlignment="Center">
+                                                    <TextBlock Text="&gt;"/>
+                                                    <DockPanel HorizontalAlignment="Center">
+                                                        <TextBlock Text="FÄHIGKEITEN"/>
+                                                    </DockPanel>
+                                                </DockPanel>
+                                            </DockPanel>
+                                        </Button>
+                                        <DockPanel DockPanel.Dock="Top" HorizontalAlignment="Center">
+                                            <DataGrid Name="LimitedAbilityGrid" HorizontalAlignment="Stretch" RowBackground="#00F0F0F0" AlternatingRowBackground="#33688CAF" DockPanel.Dock="Top" AutoGenerateColumns="False" CanUserAddRows="True" CanUserResizeRows="False" CanUserDeleteRows="True" CanUserReorderColumns="True" AllowDrop="True" Background="#00F0F0F0">
+                                                <!--<DataGrid.ContextMenu>
+                                                    <ContextMenu>
+                                                        <MenuItem Header="_New" />
+                                                    </ContextMenu>
+                                                </DataGrid.ContextMenu>-->
+                                                <DataGrid.ColumnHeaderStyle>
+                                                    <Style TargetType="DataGridColumnHeader">
+
+                                                        <Setter Property="Background" Value="#00000000"/>
+                                                        <Setter Property="Foreground" Value="Black"/>
+
+                                                        <!--<Style.Triggers>
+                                                                <Trigger Property="IsMouseOver" Value="True">
+                                                                    <Setter Property="ToolTip" Value="Click to sort."/>
+                                                                </Trigger>
+                                                            </Style.Triggers>-->
+                                                    </Style>
+                                                </DataGrid.ColumnHeaderStyle>
+                                                <DataGrid.Columns>
+                                                    <DataGridTextColumn x:Name="LimitedAbilityName" Header="FÄHIGKEIT" Width="auto"/>
+                                                    <DataGridTemplateColumn x:Name="LimitedAbilityDescription" CellTemplate="{StaticResource textcollumn}" Header="BESCHREIBUNG" MaxWidth="200" />
+                                                    <DataGridTemplateColumn x:Name="LimitedAbilityRest" Header="RAST" CellTemplate="{StaticResource RestTemplate}" Width="auto">
+
+                                                    </DataGridTemplateColumn>
+
+                                                    <local:DataGridNumericColumn x:Name="LimitedAbilityTotal" Header="TOTAL" Width="auto"/>
+                                                    <DataGridTemplateColumn x:Name="LimitedAbilityused" CellTemplate="{StaticResource UsedTemplate}" Header="VERWENDET" Width="auto"/>
+                                                </DataGrid.Columns>
+                                                <!--<DataGrid.RowHeaderTemplate>
+                                                    <DataTemplate>
+                                                        <TextBlock Text="hihiheader"/>
+                                                    </DataTemplate>
+                                                </DataGrid.RowHeaderTemplate>-->
+                                            </DataGrid>
+                                        </DockPanel>
+                                        <DockPanel/>
+                                    </DockPanel>
+                                    <DockPanel DockPanel.Dock="Top">
+                                        <DockPanel DockPanel.Dock="Right">
+                                            <Label Content="Gesammtgewicht&#10;Character" DockPanel.Dock="Top"/>
+                                            <TextBlock x:Name="tbl_weigthcharacterwithinventory"/>
+                                        </DockPanel>
+                                        <DockPanel x:Name="dp_Inventory" LastChildFill="True" DockPanel.Dock="left">
+                                            <Button DockPanel.Dock="Top" Background="{x:Null}" BorderBrush="{x:Null}"  VerticalContentAlignment="Stretch" VerticalAlignment="Stretch" HorizontalContentAlignment="Stretch" FontStretch="Normal">
+                                                <DockPanel VerticalAlignment="Stretch" IsHitTestVisible="True" LastChildFill="True" Background="#00000000">
+                                                    <DockPanel VerticalAlignment="Center">
+                                                        <TextBlock Text="&gt;"/>
+                                                        <DockPanel HorizontalAlignment="Center">
+                                                            <TextBlock Text="INVENTAR"/>
+                                                        </DockPanel>
+                                                    </DockPanel>
+                                                </DockPanel>
+                                            </Button>
+                                            <DockPanel>
+                                                <DataGrid Name="ItemsGrid" HorizontalAlignment="Center" RowBackground="#00F0F0F0" AlternatingRowBackground="#33688CAF" DockPanel.Dock="top" AutoGenerateColumns="False" CanUserAddRows="True" CanUserResizeRows="False" CanUserDeleteRows="True" CanUserReorderColumns="True" AllowDrop="True" Background="#00F0F0F0">
+                                                    <!--<DataGrid.ContextMenu>
+                                                        <ContextMenu>
+                                                            <MenuItem Header="_New" />
+                                                        </ContextMenu>
+                                                    </DataGrid.ContextMenu>-->
+                                                    <DataGrid.ColumnHeaderStyle>
+                                                        <Style TargetType="DataGridColumnHeader">
+
+                                                            <Setter Property="Background" Value="#00000000"/>
+                                                            <Setter Property="Foreground" Value="Black"/>
+
+                                                            <!--<Style.Triggers>
+                                                                <Trigger Property="IsMouseOver" Value="True">
+                                                                    <Setter Property="ToolTip" Value="Click to sort."/>
+                                                                </Trigger>
+                                                            </Style.Triggers>-->
+                                                        </Style>
+                                                    </DataGrid.ColumnHeaderStyle>
+
+                                                    <DataGrid.Columns>
+                                                        <DataGridTextColumn x:Name="ItemName" Header="NAME"/>
+                                                        <DataGridTemplateColumn x:Name="ItemDescription" CellTemplate="{StaticResource textcollumn}" Header="BESCHREIBUNG" MaxWidth="300" />
+
+                                                        <DataGridTemplateColumn x:Name="ItemCount" CellTemplate="{StaticResource ItemCountTemplate}" Header="ANZAHL"/>
+                                                        <local:DataGridDecimalColumn x:Name="ItemCost" Header="WERT"/>
+                                                        <local:DataGridDecimalColumn x:Name="ItemWeigth" Header="GEWICHT" Width="auto"/>
+                                                    </DataGrid.Columns>
+                                                    <!--<DataGrid.RowHeaderTemplate>
+                                                        <DataTemplate>
+                                                            <TextBlock Text="hihiheader"/>
+                                                        </DataTemplate>
+                                                    </DataGrid.RowHeaderTemplate>-->
+                                                </DataGrid>
+                                                <DockPanel>
+                                                    <Label Content="Gesammtgewicht"/>
+                                                    <TextBlock x:Name="tbl_weightinpound"/>
+                                                    <Label Content="Pfund      in kg"/>
+                                                    <TextBlock x:Name="tbl_weightinkg"/>
+                                                    <Label Content="belastet"/>
+                                                    <TextBlock x:Name="tbl_weigthburdend"/>
+                                                    <Label Content="schwer belastet"/>
+                                                    <TextBlock x:Name="tbl_weigthheavilyburdend"/>
+                                                    <Label Content="Gesammtwert"/>
+                                                    <TextBlock x:Name="tbl_inventoryworth"/>
+                                                </DockPanel>
+                                            </DockPanel>
+                                        </DockPanel>
+
+                                    </DockPanel>
+                                    <DockPanel x:Name="dp_Magic" LastChildFill="True" DockPanel.Dock="Top">
+                                        <Button DockPanel.Dock="Top" Background="{x:Null}" BorderBrush="{x:Null}"  VerticalContentAlignment="Stretch" VerticalAlignment="Stretch" HorizontalContentAlignment="Stretch" FontStretch="Normal">
+                                            <DockPanel VerticalAlignment="Stretch" IsHitTestVisible="True" LastChildFill="True" Background="#00000000">
+                                                <DockPanel VerticalAlignment="Center">
+                                                    <TextBlock Text="&gt;"/>
+                                                    <DockPanel HorizontalAlignment="Center">
+                                                        <TextBlock Text="MAGIE"/>
+                                                    </DockPanel>
+                                                </DockPanel>
+                                            </DockPanel>
+
+
+                                        </Button>
+                                        <DockPanel DockPanel.Dock="Top">
+                                            <DockPanel DockPanel.Dock="Top" LastChildFill="False" HorizontalAlignment="Stretch" VerticalAlignment="Top">
+                                                <TextBox x:Name="tb_UsedMana"  Background="#00F0F0F0" DockPanel.Dock="Right" Width="{Binding ActualWidth, ElementName=SpellCost}"/>
+                                                <TextBlock Text="Verbraucht" DockPanel.Dock="Right"/>
+
+                                                <TextBox x:Name="tb_ManaPool" MinWidth="20" Background="#00F0F0F0" DockPanel.Dock="Right"/>
+
+                                                <TextBlock Text="Manapool"  DockPanel.Dock="Right"/>
+
+                                            </DockPanel>
+                                            <DockPanel>
+                                                <DataGrid HorizontalAlignment="Center" RowBackground="#00F0F0F0" AlternatingRowBackground="#33688CAF" Name="SpellGrid" DockPanel.Dock="Left" AutoGenerateColumns="False" CanUserAddRows="True" CanUserResizeRows="False" CanUserDeleteRows="True" CanUserReorderColumns="True" AllowDrop="True" Background="#00F0F0F0">
+                                                    <!--<DataGrid.ContextMenu>
+                                                        <ContextMenu>
+                                                            <MenuItem Header="_New" />
+                                                        </ContextMenu>
+                                                    </DataGrid.ContextMenu>-->
+                                                    <DataGrid.ColumnHeaderStyle>
+                                                        <Style TargetType="DataGridColumnHeader">
+                                                            
+                                                            <Setter Property="Background" Value="#00000000"/>
+                                                            <Setter Property="Foreground" Value="Black"/>
+                                                            
+                                                            <!--<Style.Triggers>
+                                                                <Trigger Property="IsMouseOver" Value="True">
+                                                                    <Setter Property="ToolTip" Value="Click to sort."/>
+                                                                </Trigger>
+                                                            </Style.Triggers>-->
+                                                        </Style>
+                                                    </DataGrid.ColumnHeaderStyle>
+
+                                                    <DataGrid.Columns>
+                                                        <DataGridTextColumn x:Name="SpellName" Header="ZAUBER"/>
+                                                        <DataGridTextColumn x:Name="SpellDescription" Header="BESCHREIBUNG"  MaxWidth="99"/>
+                                                        <DataGridTextColumn x:Name="SpellReach" Header="REICHWEITE"/>
+                                                        <local:DataGridNumericColumn x:Name="SpellLevel" Header="LEVEL" />
+                                                        <DataGridTemplateColumn x:Name="SpellRest" Header="RAST" CellTemplate="{StaticResource RestTemplate}" />
+                                                        <DataGridTextColumn x:Name="SpellDice" Header="WÜRFEL"/>
+                                                        <local:DataGridNumericColumn x:Name="SpellDamageBonus" Header="BONUS"/>
+                                                        <DataGridTemplateColumn x:Name="SpellUseLevel" CellTemplate="{StaticResource ToggleButtonColumn}" Header="ZAUBERGRAD/KOSTEN"/>
+                                                        <DataGridTemplateColumn x:Name="SpellCost" CellTemplate="{StaticResource CastSpell}" Header=""/>
+                                                    </DataGrid.Columns>
+                                                    <!--<DataGrid.RowHeaderTemplate>
+                                                        <DataTemplate>
+                                                            <TextBlock Text="hihiheader"/>
+                                                        </DataTemplate>
+                                                    </DataGrid.RowHeaderTemplate>-->
+                                                </DataGrid>
+                                            </DockPanel>
+                                        </DockPanel>
+                                        <DockPanel>
+                                            
+                                        </DockPanel>
+                                    </DockPanel>
+
+                                </DockPanel>
+                            </DockPanel>
+                        </DockPanel>
+                    </DockPanel>
+                </DockPanel>
+
+                <DockPanel DockPanel.Dock="Top" LastChildFill="True">
+
+                    <local:ExpanderButton x:Name="ExpanderButton" Background="{x:Null}" BorderBrush="{x:Null}"  VerticalContentAlignment="Stretch" VerticalAlignment="Stretch" HorizontalContentAlignment="Stretch" FontStretch="Normal">
+                        <DockPanel VerticalAlignment="Stretch" IsHitTestVisible="True" LastChildFill="True" Background="#00000000">
+                            <DockPanel VerticalAlignment="Center">
+                                <TextBlock Text="&gt;"/>
+                            </DockPanel>
+                        </DockPanel>
+
+
+                    </local:ExpanderButton>
+                    <DockPanel  Visibility="Collapsed" LastChildFill="True">
+                        <DockPanel DockPanel.Dock="Top" LastChildFill="True">
+                            <!--<Button Content="Neu"/>-->
+                            <Button x:Name="SaveButton" Content="Speichern" />
+                            <Button x:Name="SaveAssButton" Content="Speichern als..." />
+                            <Button x:Name="LoadButton" Content="Laden" />
+                            <!--<Button Content="Import"/>-->
+                            <!--<Button Content="Löschen"/>-->
+                        </DockPanel>
+
+                        <DockPanel LastChildFill="True">
+                            <ListBox x:Name="lb_Characters"  Background="#00F0F0F0" DockPanel.Dock="Top">
+
+                            </ListBox>
+                            <DockPanel>
+                                
+                            </DockPanel>
+                        </DockPanel>
+                    </DockPanel>
+
+                </DockPanel>
+            </DockPanel>
+        </ScrollViewer>
+    </Grid>
+</Window>
